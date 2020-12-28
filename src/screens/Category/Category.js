@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, Image, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import styles from './CategoryStyle';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 const data = [
   { id: Math.floor(Math.random() * 10000) + 1, title: 'Category 1' },
@@ -84,16 +86,13 @@ const Category = () => {
   return (
     <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add Category"
+        <Input
           value={category}
           onChangeText={handleText}
+          placeholder="Add Category"
+          error={error}
         />
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        <TouchableOpacity style={styles.button} activeOpacity={0.9} onPress={handleSave}>
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
+        <Button text="Save" onPress={handleSave} />
       </View>
       <FlatList
         keyExtractor={(_, index) => index.toString()}

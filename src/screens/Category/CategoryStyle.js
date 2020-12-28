@@ -16,27 +16,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
   },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: Colors.primary,
-    paddingHorizontal: 20,
-  },
-  errorText: {
-    color: 'red',
-    alignSelf: 'flex-start',
-  },
-  button: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 40,
-    paddingVertical: 8,
-    borderRadius: 4,
-    marginTop: 40,
-    alignSelf: 'center',
-  },
-  buttonText: {
-    color: Colors.white,
-  },
   categoryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,0 +1,39 @@
+import { StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
+
+const styles = StyleSheet.create({
+  flatListContainer: {
+    margin: 15,
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.contactBorder,
+    paddingVertical: 10,
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  name: {
+    marginLeft: 20,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.black,
+  },
+  rightContainer: {
+    flexDirection: 'row',
+  },
+  actionImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 15,
+  },
+});
+
+export default styles;

@@ -15,7 +15,7 @@ const MainNavigator = () => {
     <NavigationContainer theme={MyTheme}>
       <DrawerNavigator drawerContentOptions={drawerOptions} drawerType="slide">
         <DrawerScreen
-          name="DrawerAddCategory"
+          name="AddCategory"
           component={Category}
           options={props => ({
             ...headerOptions(props),
@@ -24,12 +24,12 @@ const MainNavigator = () => {
           })}
         />
         <DrawerScreen
-          name="DrawerAddContact"
+          name="AddContact"
           component={AddContact}
           options={props => ({ ...headerOptions(props), title: 'Add Contact' })}
         />
         <DrawerScreen
-          name="DrawerContact"
+          name="Contact"
           component={Contact}
           options={props => ({
             ...headerOptions(props),
