@@ -136,21 +136,21 @@ const AddContact = ({ navigation, route }) => {
       <Input
         containerStyle={styles.input}
         value={data.fname}
-        onChangeText={text => handleData('fname', text)}
+        onChangeText={text => handleData('fname', text.replace(/ +/g, ' ').trimLeft())}
         placeholder="First Name"
         error={error.fname || ''}
       />
       <Input
         containerStyle={styles.input}
         value={data.lname}
-        onChangeText={text => handleData('lname', text)}
+        onChangeText={text => handleData('lname', text.replace(/ +/g, ' ').trimLeft())}
         placeholder="Last Name"
         error={error.lname || ''}
       />
       <Input
         containerStyle={styles.input}
         value={data.mobile}
-        onChangeText={text => handleData('mobile', text)}
+        onChangeText={text => handleData('mobile', text.trim())}
         placeholder="Mobile Number"
         error={error.mobile || ''}
         keyboardType="number-pad"
@@ -159,11 +159,12 @@ const AddContact = ({ navigation, route }) => {
       <Input
         containerStyle={styles.input}
         value={data.email}
-        onChangeText={text => handleData('email', text)}
+        onChangeText={text => handleData('email', text.trim())}
         placeholder="Email"
         error={error.email || ''}
         keyboardType="email-address"
         autoCapitalize="none"
+        caretHidden
       />
       <View style={styles.pickerContainer}>
         <Picker

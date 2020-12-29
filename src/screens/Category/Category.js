@@ -21,7 +21,7 @@ const Category = () => {
       setError('Please enter category');
       return null;
     }
-    if (categories.some(cur => cur.label.toLowerCase() === category.toLowerCase())) {
+    if (categories.some(cur => cur.label.trim().toLowerCase() === category.trim().toLowerCase())) {
       setError('Category Already Exist');
       return null;
     }
@@ -30,7 +30,7 @@ const Category = () => {
         cat.map(cur => {
           if (cur.value === editId) {
             const temp = { ...cur };
-            temp.label = category;
+            temp.label = category.trim();
             return temp;
           }
           return cur;
@@ -39,7 +39,7 @@ const Category = () => {
     } else {
       setCategories(cat => [
         ...cat,
-        { value: Math.floor(Math.random() * 10000) + 1, label: category },
+        { value: Math.floor(Math.random() * 10000) + 1, label: category.trim() },
       ]);
     }
     setCategory('');
@@ -49,7 +49,7 @@ const Category = () => {
   };
 
   const handleText = text => {
-    setCategory(text);
+    setCategory(text.replace(/ +/g, ' ').trimLeft());
     if (!text.trim()) {
       setError('Please enter category');
     } else {
