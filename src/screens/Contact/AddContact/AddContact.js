@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Image, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { AppContext } from '../../../../context/AppContext';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import styles from './AddContactStyle';
 import Colors from '../../../constants/Colors';
-
-const categories = [
-  { label: 'Full Stack Developer', value: 'fullstack' },
-  { label: 'Web Developer', value: 'web' },
-  { label: 'App Developer', value: 'app' },
-  { label: 'DevOps Engineer', value: 'devops' },
-];
 
 const AddContact = ({ navigation, route }) => {
   const { params } = route;
@@ -23,6 +17,7 @@ const AddContact = ({ navigation, route }) => {
     email: '',
     category: '',
   };
+  const { categories } = useContext(AppContext);
   const [image, setImage] = useState('');
   const [data, setData] = useState(initialData);
   const [error, setError] = useState({});
@@ -140,6 +135,7 @@ const AddContact = ({ navigation, route }) => {
         placeholder="Email"
         error={error.email || ''}
         keyboardType="email-address"
+        autoCapitalize="none"
       />
       <View style={styles.pickerContainer}>
         <Picker
