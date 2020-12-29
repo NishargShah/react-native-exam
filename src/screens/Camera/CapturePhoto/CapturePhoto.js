@@ -14,7 +14,7 @@ import Colors from '../../../constants/Colors';
 import styles from './CapturePhotoStyle';
 
 const CapturePhoto = props => {
-  const { navigation, isFocused } = props;
+  const { navigation, route, isFocused } = props;
   const [hasPermission, setPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [flashIcon, setFlashIcon] = useState('flash-off');
@@ -52,6 +52,7 @@ const CapturePhoto = props => {
       data.cameraType = cameraType;
       navigation.navigate('ShowPhoto', {
         photoData: data,
+        extraData: route.params.extraData,
       });
     }
   };
@@ -65,6 +66,7 @@ const CapturePhoto = props => {
       data.cameraType = cameraType;
       navigation.navigate('ShowPhoto', {
         photoData: data,
+        extraData: route.params.extraData,
       });
     }
   };

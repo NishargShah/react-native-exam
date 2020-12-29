@@ -25,11 +25,8 @@ const AddContact = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // console.log(params);
       if (params?.item) {
-        const { isEditMode, item } = params;
-        // console.log({ isEditMode });
-        // console.log({ params });
+        const { item } = params;
         setData(item);
         navigation.setOptions({
           headerTitle: 'Edit Contact',
@@ -40,8 +37,8 @@ const AddContact = ({ navigation, route }) => {
         });
         setData(initialData);
       }
-      if (params?.photo) {
-        setData(prev => ({ ...prev, image: params.photo.uri }));
+      if (params?.extraData) {
+        setData({ ...params.extraData, image: params.photo.uri });
       }
     });
     setRendered(true);
@@ -51,7 +48,7 @@ const AddContact = ({ navigation, route }) => {
   useEffect(
     () =>
       navigation.addListener('blur', () => {
-        navigation.setParams({ item: null, isEditMode: null, photo: null });
+        navigation.setParams({ item: null, isEditMode: null, photo: null, extraData: null });
         setData(initialData);
       }),
     [route, navigation]
@@ -120,7 +117,10 @@ const AddContact = ({ navigation, route }) => {
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
     >
-      <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('CapturePhoto')}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => navigation.navigate('CapturePhoto', { extraData: data })}
+      >
         <Image
           style={styles.image}
           source={data.image ? { uri: data.image } : require('../../../assets/icons/profile.png')}

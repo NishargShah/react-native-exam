@@ -30,6 +30,7 @@ const ShowPhoto = props => {
     });
     navigation.navigate('AddContact', {
       photo: photoData,
+      extraData: route.params.extraData,
     });
   };
 

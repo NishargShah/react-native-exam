@@ -58,13 +58,11 @@ const Contact = ({ navigation, route }) => {
   useEffect(() => {
     if (params) {
       const { isEditMode, item } = params;
-      console.log(params);
       if (item) {
         if (isEditMode) {
           const modifiedContacts = contacts.map(cur => (cur.id === item.id ? item : cur));
           setContacts(modifiedContacts);
         } else {
-          console.log('item', item);
           setContacts(con => [...con, item]);
         }
         navigation.setParams({ item: null, isEditMode: null });
@@ -73,7 +71,6 @@ const Contact = ({ navigation, route }) => {
   }, [params]);
 
   useEffect(() => {
-    console.log('ddwad', contacts);
     navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: 'row', marginRight: 10 }}>
