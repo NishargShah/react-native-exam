@@ -167,7 +167,7 @@ const Contact = ({ navigation, route }) => {
           </Picker>
         </View>
       )}
-      {contacts.length ? (
+      {(search || category ? filteredContacts.length : contacts.length) ? (
         <FlatList
           keyExtractor={(_, index) => index.toString()}
           data={search || category ? filteredContacts : contacts}

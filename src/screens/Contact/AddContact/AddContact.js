@@ -82,10 +82,10 @@ const AddContact = ({ navigation, route }) => {
       setError(err => ({ ...err, email: 'Please Enter Email' }));
       validation.push(false);
     }
-    // if (data.email && !emailCheck.test(data.email)) {
-    //   setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
-    //   validation.push(false);
-    // }
+    if (data.email && !emailCheck.test(data.email)) {
+      setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
+      validation.push(false);
+    }
     return validation;
   };
 
