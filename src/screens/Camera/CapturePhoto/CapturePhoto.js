@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, TouchableHighlight, Text, BackHandler } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
 import { HeaderBackButton } from '@react-navigation/stack';
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -33,17 +34,20 @@ const CapturePhoto = props => {
       extraData: route.params.extraData,
       photo: null,
       isEditMode: route.params?.isEditMode,
+      forceBack: true,
     });
     return true;
   };
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', HandleBackPressed);
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', HandleBackPressed);
 
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', HandleBackPressed);
-    };
-  }, []);
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', HandleBackPressed);
+      };
+    }, [navigation, route])
+  );
 
   const handleCameraType = () => {
     setCameraType(prevState =>
@@ -113,7 +117,7 @@ const CapturePhoto = props => {
           <View style={styles.topWrapper}>
             <HeaderBackButton
               tintColor={Colors.white}
-              onPress={navigation.goBack}
+              onPress={HandleBackPressed}
               labelVisible={false}
             />
             <Text style={styles.cameraText}>Camera</Text>

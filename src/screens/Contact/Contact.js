@@ -112,11 +112,14 @@ const Contact = ({ navigation, route }) => {
 
   const handleDelete = item => {
     setContacts(contact => contact.filter(cur => cur.id !== item.id));
+    setFilteredContacts(contact => contact.filter(cur => cur.id !== item.id));
   };
 
   const handleSearch = text => {
     setSearch(text);
-    setFilteredContacts(contacts.filter(cur => cur.fname.includes(text)));
+    setFilteredContacts(
+      contacts.filter(cur => cur.fname.toLowerCase().includes(text.toLowerCase()))
+    );
   };
 
   const handleSelect = text => {
@@ -174,6 +177,7 @@ const Contact = ({ navigation, route }) => {
           renderItem={renderContacts}
           style={styles.flatListContainer}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         />
       ) : (
         <Text style={styles.noContacts}>No Contacts Found</Text>

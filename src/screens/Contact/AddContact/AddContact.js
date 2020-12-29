@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Image, TouchableOpacity, View, Text } from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Image, TouchableOpacity, View, Text, BackHandler } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../../context/AppContext';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
@@ -28,6 +29,10 @@ const AddContact = ({ navigation, route }) => {
       if (params?.item) {
         const { item } = params;
         setData(item);
+      } else {
+        setData(initialData);
+      }
+      if (params?.isEditMode) {
         navigation.setOptions({
           headerTitle: 'Edit Contact',
         });
@@ -35,7 +40,6 @@ const AddContact = ({ navigation, route }) => {
         navigation.setOptions({
           headerTitle: 'Add Contact',
         });
-        setData(initialData);
       }
       if (params?.extraData) {
         setData({ ...params.extraData, image: params.photo?.uri ?? '' });
@@ -48,11 +52,35 @@ const AddContact = ({ navigation, route }) => {
   useEffect(
     () =>
       navigation.addListener('blur', () => {
-        navigation.setParams({ item: null, isEditMode: null, photo: null, extraData: null });
+        navigation.setParams({
+          item: null,
+          isEditMode: null,
+          photo: null,
+          extraData: null,
+          forceBack: false,
+        });
         setData(initialData);
         setError({});
       }),
     [route, navigation]
+  );
+
+  const handleBack = () => {
+    if (params?.forceBack) {
+      navigation.navigate('Contact');
+      return true;
+    }
+    return false;
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', handleBack);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', handleBack);
+      };
+    }, [navigation, route])
   );
 
   const emailCheck = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -85,6 +113,10 @@ const AddContact = ({ navigation, route }) => {
     }
     if (data.email.trim() && !emailCheck.test(data.email)) {
       setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
+      validation.push(false);
+    }
+    if (!data.category) {
+      setError(err => ({ ...err, category: 'Please Select Category' }));
       validation.push(false);
     }
     return validation;
@@ -123,7 +155,7 @@ const AddContact = ({ navigation, route }) => {
         onPress={() =>
           navigation.navigate('CapturePhoto', {
             extraData: data,
-            isEditMode: params?.isEditMode,
+            isEditMode: params?.isEditMode ?? false,
           })
         }
       >
@@ -131,7 +163,9 @@ const AddContact = ({ navigation, route }) => {
           style={styles.image}
           source={data.image ? { uri: data.image } : require('../../../assets/icons/profile.png')}
         />
-        {error.image && <Text style={styles.errorText}>{error.image}</Text>}
+        {error.image && (
+          <Text style={{ ...styles.errorText, ...styles.errorTextCenter }}>{error.image}</Text>
+        )}
       </TouchableOpacity>
       <Input
         containerStyle={styles.input}
@@ -173,11 +207,13 @@ const AddContact = ({ navigation, route }) => {
           style={styles.picker}
           dropdownIconColor={Colors.primary}
         >
+          <Picker.Item color={Colors.gray} label="Select" value="" />
           {categories.map((cur, i) => (
             <Picker.Item color={Colors.gray} key={i} label={cur.label} value={cur.value} />
           ))}
         </Picker>
       </View>
+      {error.category && <Text style={styles.errorText}>{error.category}</Text>}
       <Button text="Save" onPress={handleSave} style={styles.button} />
     </KeyboardAwareScrollView>
   );

@@ -30,8 +30,11 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    textAlign: 'center',
+    alignSelf: 'flex-start',
     marginBottom: 10,
+  },
+  errorTextCenter: {
+    alignSelf: 'center',
   },
   button: {
     marginBottom: 30,
