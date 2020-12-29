@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TouchableHighlight, Text } from 'react-native';
+import { View, TouchableHighlight, Text, BackHandler } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
 import { HeaderBackButton } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
@@ -28,6 +28,23 @@ const CapturePhoto = props => {
     })();
   }, []);
 
+  const HandleBackPressed = () => {
+    navigation.navigate('AddContact', {
+      extraData: route.params.extraData,
+      photo: null,
+      isEditMode: route.params?.isEditMode,
+    });
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', HandleBackPressed);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', HandleBackPressed);
+    };
+  }, []);
+
   const handleCameraType = () => {
     setCameraType(prevState =>
       prevState === Camera.Constants.Type.back
@@ -53,6 +70,7 @@ const CapturePhoto = props => {
       navigation.navigate('ShowPhoto', {
         photoData: data,
         extraData: route.params.extraData,
+        isEditMode: route.params?.isEditMode,
       });
     }
   };
@@ -67,6 +85,7 @@ const CapturePhoto = props => {
       navigation.navigate('ShowPhoto', {
         photoData: data,
         extraData: route.params.extraData,
+        isEditMode: route.params?.isEditMode,
       });
     }
   };

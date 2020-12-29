@@ -17,7 +17,7 @@ const Category = () => {
   }, []);
 
   const handleSave = () => {
-    if (!category) {
+    if (!category.trim()) {
       setError('Please enter category');
       return null;
     }
@@ -50,7 +50,7 @@ const Category = () => {
 
   const handleText = text => {
     setCategory(text);
-    if (!text) {
+    if (!text.trim()) {
       setError('Please enter category');
     } else {
       setError('');

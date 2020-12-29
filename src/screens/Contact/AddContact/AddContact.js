@@ -38,7 +38,7 @@ const AddContact = ({ navigation, route }) => {
         setData(initialData);
       }
       if (params?.extraData) {
-        setData({ ...params.extraData, image: params.photo.uri });
+        setData({ ...params.extraData, image: params.photo?.uri ?? '' });
       }
     });
     setRendered(true);
@@ -50,6 +50,7 @@ const AddContact = ({ navigation, route }) => {
       navigation.addListener('blur', () => {
         navigation.setParams({ item: null, isEditMode: null, photo: null, extraData: null });
         setData(initialData);
+        setError({});
       }),
     [route, navigation]
   );
@@ -58,31 +59,31 @@ const AddContact = ({ navigation, route }) => {
 
   const formCheck = () => {
     const validation = [];
-    if (!data.image) {
+    if (!data.image.trim()) {
       setError(err => ({ ...err, image: 'Please Upload Image' }));
       validation.push(false);
     }
-    if (!data.fname) {
+    if (!data.fname.trim()) {
       setError(err => ({ ...err, fname: 'Please Enter First Name' }));
       validation.push(false);
     }
-    if (!data.lname) {
+    if (!data.lname.trim()) {
       setError(err => ({ ...err, lname: 'Please Enter Last Name' }));
       validation.push(false);
     }
-    if (!data.mobile) {
+    if (!data.mobile.trim()) {
       setError(err => ({ ...err, mobile: 'Please Enter Mobile Number' }));
       validation.push(false);
     }
-    if (data.mobile && data.mobile.length !== 10) {
+    if (data.mobile.trim() && data.mobile.length !== 10) {
       setError(err => ({ ...err, mobile: 'Please Enter Valid Mobile Number' }));
       validation.push(false);
     }
-    if (!data.email) {
+    if (!data.email.trim()) {
       setError(err => ({ ...err, email: 'Please Enter Email' }));
       validation.push(false);
     }
-    if (data.email && !emailCheck.test(data.email)) {
+    if (data.email.trim() && !emailCheck.test(data.email)) {
       setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
       validation.push(false);
     }
@@ -119,7 +120,12 @@ const AddContact = ({ navigation, route }) => {
     >
       <TouchableOpacity
         activeOpacity={0.9}
-        onPress={() => navigation.navigate('CapturePhoto', { extraData: data })}
+        onPress={() =>
+          navigation.navigate('CapturePhoto', {
+            extraData: data,
+            isEditMode: params?.isEditMode,
+          })
+        }
       >
         <Image
           style={styles.image}
