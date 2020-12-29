@@ -5,6 +5,9 @@ import { MyTheme, headerOptions, drawerOptions } from './NavigationOptions';
 import Category from '../screens/Category/Category';
 import Contact from '../screens/Contact/Contact';
 import AddContact from '../screens/Contact/AddContact/AddContact';
+import CapturePhoto from '../screens/Camera/CapturePhoto/CapturePhoto';
+import ShowPhoto from '../screens/Camera/ShowPhoto/ShowPhoto';
+import CustomDrawer from './CustomDrawer';
 
 const Drawer = createDrawerNavigator();
 
@@ -14,9 +17,9 @@ const MainNavigator = () => {
   return (
     <NavigationContainer theme={MyTheme}>
       <DrawerNavigator
-        initialRouteName="Contact"
         drawerContentOptions={drawerOptions}
         drawerType="slide"
+        drawerContent={props => <CustomDrawer state={props.state} {...props} />}
       >
         <DrawerScreen
           name="AddCategory"
@@ -40,6 +43,8 @@ const MainNavigator = () => {
             title: 'Contact List',
           })}
         />
+        <DrawerScreen name="CapturePhoto" component={CapturePhoto} />
+        <DrawerScreen name="ShowPhoto" component={ShowPhoto} />
       </DrawerNavigator>
     </NavigationContainer>
   );

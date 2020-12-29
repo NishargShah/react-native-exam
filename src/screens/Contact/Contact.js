@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { AppContext } from '../../../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 import styles from './ContactStyle';
 import Input from '../../components/Input';
 import Colors from '../../constants/Colors';
@@ -9,7 +9,7 @@ import Colors from '../../constants/Colors';
 const data = [
   {
     id: Math.floor(Math.random() * 10000) + 1,
-    image: require('../../assets/icons/profile.png'),
+    image: 'https://randomuser.me/api/portraits/men/3.jpg',
     fname: 'Nisharg',
     lname: 'Shah',
     mobile: '8733940250',
@@ -18,7 +18,7 @@ const data = [
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
-    image: require('../../assets/icons/profile.png'),
+    image: 'https://randomuser.me/api/portraits/men/52.jpg',
     fname: 'Nisharg007',
     lname: 'Shah',
     mobile: '7016684438',
@@ -27,7 +27,7 @@ const data = [
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
-    image: require('../../assets/icons/profile.png'),
+    image: 'https://randomuser.me/api/portraits/women/44.jpg',
     fname: 'Nisharg07',
     lname: 'Shah',
     mobile: '0123456789',
@@ -36,7 +36,7 @@ const data = [
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
-    image: require('../../assets/icons/profile.png'),
+    image: 'https://randomuser.me/api/portraits/women/70.jpg',
     fname: 'Nisharg47',
     lname: 'Shah',
     mobile: '1234567890',
@@ -59,17 +59,21 @@ const Contact = ({ navigation, route }) => {
     if (params) {
       const { isEditMode, item } = params;
       console.log(params);
-      if (isEditMode) {
-        const modifiedContacts = contacts.map(cur => (cur.id === item.id ? item : cur));
-        setContacts(modifiedContacts);
-      } else {
-        setContacts(con => [...con, item]);
+      if (item) {
+        if (isEditMode) {
+          const modifiedContacts = contacts.map(cur => (cur.id === item.id ? item : cur));
+          setContacts(modifiedContacts);
+        } else {
+          console.log('item', item);
+          setContacts(con => [...con, item]);
+        }
+        navigation.setParams({ item: null, isEditMode: null });
       }
-      navigation.setParams({ item: null, isEditMode: null });
     }
   }, [params]);
 
   useEffect(() => {
+    console.log('ddwad', contacts);
     navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: 'row', marginRight: 10 }}>
@@ -126,7 +130,7 @@ const Contact = ({ navigation, route }) => {
   const renderContacts = ({ item }) => (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Image style={styles.image} source={item.image} />
+        <Image style={styles.image} source={{ uri: item.image }} />
         <Text style={styles.name}>{item.fname}</Text>
       </View>
       <View style={styles.rightContainer}>

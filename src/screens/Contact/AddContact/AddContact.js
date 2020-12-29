@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import { Image, TouchableOpacity, View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
-import { AppContext } from '../../../../context/AppContext';
+import { AppContext } from '../../../context/AppContext';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import styles from './AddContactStyle';
@@ -16,20 +16,20 @@ const AddContact = ({ navigation, route }) => {
     mobile: '',
     email: '',
     category: '',
+    image: '',
   };
   const { categories } = useContext(AppContext);
-  const [image, setImage] = useState('');
   const [data, setData] = useState(initialData);
   const [error, setError] = useState({});
   const [isRendered, setRendered] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log(params);
+      // console.log(params);
       if (params?.item) {
         const { isEditMode, item } = params;
-        console.log({ isEditMode });
-        console.log({ params });
+        // console.log({ isEditMode });
+        // console.log({ params });
         setData(item);
         navigation.setOptions({
           headerTitle: 'Edit Contact',
@@ -40,6 +40,9 @@ const AddContact = ({ navigation, route }) => {
         });
         setData(initialData);
       }
+      if (params?.photo) {
+        setData(prev => ({ ...prev, image: params.photo.uri }));
+      }
     });
     setRendered(true);
     return unsubscribe;
@@ -48,7 +51,8 @@ const AddContact = ({ navigation, route }) => {
   useEffect(
     () =>
       navigation.addListener('blur', () => {
-        navigation.setParams({ item: null, isEditMode: null });
+        navigation.setParams({ item: null, isEditMode: null, photo: null });
+        setData(initialData);
       }),
     [route, navigation]
   );
@@ -57,6 +61,10 @@ const AddContact = ({ navigation, route }) => {
 
   const formCheck = () => {
     const validation = [];
+    if (!data.image) {
+      setError(err => ({ ...err, image: 'Please Upload Image' }));
+      validation.push(false);
+    }
     if (!data.fname) {
       setError(err => ({ ...err, fname: 'Please Enter First Name' }));
       validation.push(false);
@@ -77,10 +85,10 @@ const AddContact = ({ navigation, route }) => {
       setError(err => ({ ...err, email: 'Please Enter Email' }));
       validation.push(false);
     }
-    if (data.email && !emailCheck.test(data.email)) {
-      setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
-      validation.push(false);
-    }
+    // if (data.email && !emailCheck.test(data.email)) {
+    //   setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
+    //   validation.push(false);
+    // }
     return validation;
   };
 
@@ -112,7 +120,13 @@ const AddContact = ({ navigation, route }) => {
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
     >
-      <Image style={styles.image} source={require('../../../assets/icons/profile.png')} />
+      <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('CapturePhoto')}>
+        <Image
+          style={styles.image}
+          source={data.image ? { uri: data.image } : require('../../../assets/icons/profile.png')}
+        />
+        {error.image && <Text style={styles.errorText}>{error.image}</Text>}
+      </TouchableOpacity>
       <Input
         containerStyle={styles.input}
         value={data.fname}

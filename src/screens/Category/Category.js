@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import styles from './CategoryStyle';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { AppContext } from '../../../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 
 const Category = () => {
   const { categories, setCategories } = useContext(AppContext);
@@ -18,6 +18,7 @@ const Category = () => {
 
   const handleSave = () => {
     if (!category) {
+      setError('Please enter category');
       return null;
     }
     if (categories.some(cur => cur.label.toLowerCase() === category.toLowerCase())) {

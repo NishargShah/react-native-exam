@@ -5,6 +5,7 @@ const Colors = {
   contactBorder: '#89cdbb',
   category: '#ffe1bb',
   categoryBorder: '#ffc77e',
+  danger: '#D55383',
 
   white: '#fff',
   black: '#000',

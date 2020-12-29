@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
   },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   button: {
     marginBottom: 30,
   },
