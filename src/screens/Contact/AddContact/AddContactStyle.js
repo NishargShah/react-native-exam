@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
   },
+  button: {
+    marginBottom: 30,
+  },
 });
 
 export default styles;

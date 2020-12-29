@@ -4,18 +4,23 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 
 const Button = props => {
-  const { text, onPress } = props;
+  const { text, onPress, style } = props;
 
   return (
-    <TouchableOpacity style={styles.button} activeOpacity={0.9} onPress={onPress}>
+    <TouchableOpacity style={{ ...styles.button, ...style }} activeOpacity={0.9} onPress={onPress}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
 };
 
+Button.defaultProps = {
+  style: {},
+};
+
 Button.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
 };
 
 const styles = StyleSheet.create({

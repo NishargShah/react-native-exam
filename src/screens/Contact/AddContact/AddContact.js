@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import Input from '../../../components/Input';
@@ -14,7 +14,7 @@ const categories = [
   { label: 'DevOps Engineer', value: 'devops' },
 ];
 
-const AddContact = ({ route }) => {
+const AddContact = ({ navigation, route }) => {
   const { params } = route;
   const initialData = {
     fname: '',
@@ -29,38 +29,55 @@ const AddContact = ({ route }) => {
   const [isRendered, setRendered] = useState(false);
 
   useEffect(() => {
-    if (params) {
-      const { isEditMode, item } = params;
+    const unsubscribe = navigation.addListener('focus', () => {
       console.log(params);
-      setData(item);
-    }
+      if (params?.item) {
+        const { isEditMode, item } = params;
+        console.log(params);
+        setData(item);
+        navigation.setOptions({
+          headerTitle: 'Edit Contact',
+        });
+      } else {
+        navigation.setOptions({
+          headerTitle: 'Add Contact',
+        });
+      }
+      console.log('sad');
+    });
     setRendered(true);
-  }, [params]);
+    return unsubscribe;
+  }, [route, navigation]);
 
   const emailCheck = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const formCheck = () => {
+    const validation = [];
     if (!data.fname) {
       setError(err => ({ ...err, fname: 'Please Enter First Name' }));
-      return false;
+      validation.push(false);
     }
     if (!data.lname) {
       setError(err => ({ ...err, lname: 'Please Enter Last Name' }));
-      return false;
+      validation.push(false);
     }
     if (!data.mobile) {
       setError(err => ({ ...err, mobile: 'Please Enter Mobile Number' }));
-      return false;
+      validation.push(false);
+    }
+    if (data.mobile && data.mobile.length !== 10) {
+      setError(err => ({ ...err, mobile: 'Please Enter Valid Mobile Number' }));
+      validation.push(false);
     }
     if (!data.email) {
-      setError(err => ({ ...err, email: 'Please Enter Email Name' }));
-      return false;
+      setError(err => ({ ...err, email: 'Please Enter Email' }));
+      validation.push(false);
     }
-    if (!emailCheck.test(data.email)) {
+    if (data.email && !emailCheck.test(data.email)) {
       setError(err => ({ ...err, email: 'Please Enter Valid Email' }));
-      return false;
+      validation.push(false);
     }
-    return true;
+    return validation;
   };
 
   const handleData = (key, value) => {
@@ -68,11 +85,17 @@ const AddContact = ({ route }) => {
   };
 
   const handleSave = () => {
-    if (!formCheck()) {
+    setError({});
+    const checks = formCheck();
+    if (checks.some(cur => !cur)) {
       return null;
     }
-    setError({});
     setData(initialData);
+    navigation.setParams({ item: null });
+    navigation.navigate('Contact', {
+      item: data,
+      isEditMode: params?.isEditMode ?? false,
+    });
     return true;
   };
 
@@ -84,35 +107,39 @@ const AddContact = ({ route }) => {
     <KeyboardAwareScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
     >
       <Image style={styles.image} source={require('../../../assets/icons/profile.png')} />
       <Input
-        style={styles.input}
+        containerStyle={styles.input}
         value={data.fname}
         onChangeText={text => handleData('fname', text)}
         placeholder="First Name"
         error={error.fname || ''}
       />
       <Input
-        style={styles.input}
+        containerStyle={styles.input}
         value={data.lname}
         onChangeText={text => handleData('lname', text)}
         placeholder="Last Name"
         error={error.lname || ''}
       />
       <Input
-        style={styles.input}
+        containerStyle={styles.input}
         value={data.mobile}
         onChangeText={text => handleData('mobile', text)}
         placeholder="Mobile Number"
         error={error.mobile || ''}
+        keyboardType="number-pad"
+        maxLength={10}
       />
       <Input
-        style={styles.input}
+        containerStyle={styles.input}
         value={data.email}
         onChangeText={text => handleData('email', text)}
         placeholder="Email"
         error={error.email || ''}
+        keyboardType="email-address"
       />
       <View style={styles.pickerContainer}>
         <Picker
@@ -126,7 +153,7 @@ const AddContact = ({ route }) => {
           ))}
         </Picker>
       </View>
-      <Button text="Save" onPress={handleSave} />
+      <Button text="Save" onPress={handleSave} style={styles.button} />
     </KeyboardAwareScrollView>
   );
 };

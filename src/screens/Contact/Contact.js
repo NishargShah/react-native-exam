@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import styles from './ContactStyle';
 
@@ -41,8 +41,21 @@ const data = [
   },
 ];
 
-const Contact = ({ navigation }) => {
+const Contact = ({ navigation, route }) => {
+  const { params } = route;
   const [contacts, setContacts] = useState(data);
+
+  useEffect(() => {
+    if (params) {
+      const { isEditMode, item } = params;
+      if (isEditMode) {
+        const modifiedContacts = contacts.map(cur => (cur.id === item.id ? item : cur));
+        setContacts(modifiedContacts);
+      } else {
+        setContacts(con => [...con, item]);
+      }
+    }
+  }, [params]);
 
   const handleEdit = item => {
     navigation.navigate('AddContact', {
