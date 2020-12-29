@@ -8,12 +8,12 @@ export const AppContext = createContext({
 const AppContextProvider = ({ children }) => {
   const data = [
     {
-      value: Math.floor(Math.random() * 10000) + 1,
+      value: 1,
       label: 'Full Stack Developer',
     },
-    { value: Math.floor(Math.random() * 10000) + 1, label: 'Web Developer' },
-    { value: Math.floor(Math.random() * 10000) + 1, label: 'App Developer' },
-    { value: Math.floor(Math.random() * 10000) + 1, label: 'DevOps Engineer' },
+    { value: 2, label: 'Web Developer' },
+    { value: 3, label: 'App Developer' },
+    { value: 4, label: 'DevOps Engineer' },
   ];
 
   const [categories, setCategories] = useState(data);

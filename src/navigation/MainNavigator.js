@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { MyTheme, headerOptions, headerIcons, drawerOptions } from './NavigationOptions';
+import { MyTheme, headerOptions, drawerOptions } from './NavigationOptions';
 import Category from '../screens/Category/Category';
 import Contact from '../screens/Contact/Contact';
 import AddContact from '../screens/Contact/AddContact/AddContact';
@@ -13,7 +13,11 @@ const MainNavigator = () => {
 
   return (
     <NavigationContainer theme={MyTheme}>
-      <DrawerNavigator drawerContentOptions={drawerOptions} drawerType="slide">
+      <DrawerNavigator
+        initialRouteName="Contact"
+        drawerContentOptions={drawerOptions}
+        drawerType="slide"
+      >
         <DrawerScreen
           name="AddCategory"
           component={Category}
@@ -33,7 +37,6 @@ const MainNavigator = () => {
           component={Contact}
           options={props => ({
             ...headerOptions(props),
-            ...headerIcons(props),
             title: 'Contact List',
           })}
         />

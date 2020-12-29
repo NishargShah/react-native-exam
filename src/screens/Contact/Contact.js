@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { AppContext } from '../../../context/AppContext';
 import styles from './ContactStyle';
+import Input from '../../components/Input';
+import Colors from '../../constants/Colors';
 
 const data = [
   {
@@ -10,7 +14,7 @@ const data = [
     lname: 'Shah',
     mobile: '8733940250',
     email: 'nishargshah3101@gmail.com',
-    category: 'fullstack',
+    category: 1,
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
@@ -19,7 +23,7 @@ const data = [
     lname: 'Shah',
     mobile: '7016684438',
     email: 'nishargshah007@gmail.com',
-    category: 'web',
+    category: 2,
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
@@ -28,7 +32,7 @@ const data = [
     lname: 'Shah',
     mobile: '0123456789',
     email: 'nishargshah07@gmail.com',
-    category: 'app',
+    category: 3,
   },
   {
     id: Math.floor(Math.random() * 10000) + 1,
@@ -37,25 +41,66 @@ const data = [
     lname: 'Shah',
     mobile: '1234567890',
     email: 'nishargshah47@gmail.com',
-    category: 'devops',
+    category: 4,
   },
 ];
 
 const Contact = ({ navigation, route }) => {
   const { params } = route;
+  const { categories } = useContext(AppContext);
   const [contacts, setContacts] = useState(data);
+  const [category, setCategory] = useState('');
+  const [isFilterMode, setFilterMode] = useState(false);
+  const [filteredContacts, setFilteredContacts] = useState(contacts);
+  const [isSearchMode, setSearchMode] = useState(false);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (params) {
       const { isEditMode, item } = params;
+      console.log(params);
       if (isEditMode) {
         const modifiedContacts = contacts.map(cur => (cur.id === item.id ? item : cur));
         setContacts(modifiedContacts);
       } else {
         setContacts(con => [...con, item]);
       }
+      navigation.setParams({ item: null, isEditMode: null });
     }
   }, [params]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ flexDirection: 'row', marginRight: 10 }}>
+          <TouchableOpacity
+            onPress={() => {
+              setFilterMode(prev => !prev);
+              setSearchMode(false);
+              setCategory('');
+            }}
+          >
+            <Image
+              style={{ width: 25, height: 25, marginLeft: 10 }}
+              source={require('../../assets/icons/filter.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setSearchMode(prev => !prev);
+              setFilterMode(false);
+              setSearch('');
+            }}
+          >
+            <Image
+              style={{ width: 25, height: 25, marginLeft: 10 }}
+              source={require('../../assets/icons/search.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   const handleEdit = item => {
     navigation.navigate('AddContact', {
@@ -66,6 +111,16 @@ const Contact = ({ navigation, route }) => {
 
   const handleDelete = item => {
     setContacts(contact => contact.filter(cur => cur.id !== item.id));
+  };
+
+  const handleSearch = text => {
+    setSearch(text);
+    setFilteredContacts(contacts.filter(cur => cur.fname.includes(text)));
+  };
+
+  const handleSelect = text => {
+    setCategory(text);
+    setFilteredContacts(contacts.filter(cur => cur.category === text));
   };
 
   const renderContacts = ({ item }) => (
@@ -86,13 +141,43 @@ const Contact = ({ navigation, route }) => {
   );
 
   return (
-    <FlatList
-      keyExtractor={(_, index) => index.toString()}
-      data={contacts}
-      renderItem={renderContacts}
-      style={styles.flatListContainer}
-      showsVerticalScrollIndicator={false}
-    />
+    <Fragment>
+      {isSearchMode && (
+        <Input
+          containerStyle={styles.search}
+          placeholder="Search"
+          value={search}
+          onChangeText={handleSearch}
+          error=""
+        />
+      )}
+      {isFilterMode && (
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={category}
+            onValueChange={handleSelect}
+            style={styles.picker}
+            dropdownIconColor={Colors.primary}
+          >
+            <Picker.Item color={Colors.gray} label="Select" value="" />
+            {categories.map((cur, i) => (
+              <Picker.Item color={Colors.gray} key={i} label={cur.label} value={cur.value} />
+            ))}
+          </Picker>
+        </View>
+      )}
+      {contacts.length ? (
+        <FlatList
+          keyExtractor={(_, index) => index.toString()}
+          data={search || category ? filteredContacts : contacts}
+          renderItem={renderContacts}
+          style={styles.flatListContainer}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text style={styles.noContacts}>No Contacts Found</Text>
+      )}
+    </Fragment>
   );
 };
 

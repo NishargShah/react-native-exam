@@ -5,6 +5,10 @@ const styles = StyleSheet.create({
   flatListContainer: {
     margin: 15,
   },
+  search: {
+    paddingHorizontal: 30,
+    paddingTop: 30,
+  },
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -33,6 +37,19 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginLeft: 15,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    marginHorizontal: 30,
+    marginVertical: 20,
+  },
+  picker: {
+    width: '100%',
+  },
+  noContacts: {
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });
 

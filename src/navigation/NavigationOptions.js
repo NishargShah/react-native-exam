@@ -1,6 +1,6 @@
 import React from 'react';
 import { DefaultTheme } from '@react-navigation/native';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import Colors from '../constants/Colors';
 
 export const MyTheme = {
@@ -43,24 +43,6 @@ export const drawerOptions = {
     borderBottomWidth: 1,
     borderBottomColor: Colors.sidebarBorder,
     paddingVertical: 10,
+    paddingLeft: 10,
   },
 };
-
-export const headerIcons = props => ({
-  headerRight: () => (
-    <View style={{ flexDirection: 'row', marginRight: 10 }}>
-      <TouchableOpacity onPress={() => props.navigation.toggleDrawer()}>
-        <Image
-          style={{ width: 25, height: 25, marginLeft: 10 }}
-          source={require('../assets/icons/filter.png')}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.navigation.toggleDrawer()}>
-        <Image
-          style={{ width: 25, height: 25, marginLeft: 10 }}
-          source={require('../assets/icons/search.png')}
-        />
-      </TouchableOpacity>
-    </View>
-  ),
-});

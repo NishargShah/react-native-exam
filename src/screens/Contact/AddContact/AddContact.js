@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
@@ -28,7 +28,8 @@ const AddContact = ({ navigation, route }) => {
       console.log(params);
       if (params?.item) {
         const { isEditMode, item } = params;
-        console.log(params);
+        console.log({ isEditMode });
+        console.log({ params });
         setData(item);
         navigation.setOptions({
           headerTitle: 'Edit Contact',
@@ -37,12 +38,20 @@ const AddContact = ({ navigation, route }) => {
         navigation.setOptions({
           headerTitle: 'Add Contact',
         });
+        setData(initialData);
       }
-      console.log('sad');
     });
     setRendered(true);
     return unsubscribe;
   }, [route, navigation]);
+
+  useEffect(
+    () =>
+      navigation.addListener('blur', () => {
+        navigation.setParams({ item: null, isEditMode: null });
+      }),
+    [route, navigation]
+  );
 
   const emailCheck = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -86,7 +95,6 @@ const AddContact = ({ navigation, route }) => {
       return null;
     }
     setData(initialData);
-    navigation.setParams({ item: null });
     navigation.navigate('Contact', {
       item: data,
       isEditMode: params?.isEditMode ?? false,
